@@ -1,0 +1,22 @@
+{
+  "name": "kanban-board",
+  "version": "1.0.0",
+  "description": "Full-stack Kanban Board application",
+  "private": true,
+  "workspaces": [
+    "apps/frontend",
+    "apps/backend",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "dev:frontend": "npm run dev -w apps/frontend",
+    "dev:backend": "npm run dev -w apps/backend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces"
+  },
+  "keywords": ["kanban", "task-management", "react"],
+  "author": "",
+  "license": "ISC"
+}
