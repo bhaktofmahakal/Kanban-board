@@ -9,3 +9,6 @@ build/
 .idea/
 .vercel/
 *.pem
+apps/frontend/playwright-report/
+apps/frontend/test-results/
+apps/frontend/.vercel/
