@@ -1,7 +1,9 @@
 import axios from 'axios'
 import { Task, TaskInput } from '../types'
 
-const API_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:3000/api'
+const rawApiUrl = (import.meta.env.VITE_API_URL as string) || 'http://localhost:3000/api'
+const normalizedApiUrl = rawApiUrl.replace(/\/$/, '')
+const API_URL = normalizedApiUrl.endsWith('/api') ? normalizedApiUrl : `${normalizedApiUrl}/api`
 const STORAGE_KEY = 'kanban_tasks'
 
 const api = axios.create({

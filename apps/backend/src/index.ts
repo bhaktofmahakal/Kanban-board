@@ -1,5 +1,5 @@
 import express from 'express'
-import cors from 'cors'
+import cors, { CorsOptions } from 'cors'
 import { config } from 'dotenv'
 import { initializeDatabase, closeDatabase } from './db/index.js'
 import taskRoutes from './routes/tasks.js'
@@ -9,19 +9,34 @@ config()
 const app = express()
 const PORT = process.env.PORT || 3000
 
-app.use(express.json())
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-    credentials: true,
-  })
-)
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean)
+  .map((origin) => origin.replace(/\/$/, ''))
 
-app.get('/health', (_req, res) => {
+const corsOptions: CorsOptions = {
+  origin(origin, callback) {
+    if (!origin) {
+      return callback(null, true)
+    }
+    const normalizedOrigin = origin.replace(/\/$/, '')
+    if (allowedOrigins.includes(normalizedOrigin)) {
+      return callback(null, true)
+    }
+    return callback(new Error('Not allowed by CORS'))
+  },
+  credentials: true,
+}
+
+app.use(express.json())
+app.use(cors(corsOptions))
+
+app.get('/health', (_req: express.Request, res: express.Response) => {
   res.json({ status: 'ok' })
 })
 
-app.use('/api/tasks', taskRoutes)
+app.use(['/api/tasks', '/tasks'], taskRoutes)
 
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Error:', err)
